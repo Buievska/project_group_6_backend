@@ -1,1 +1,1 @@
-# nodejs-hw
+# project_group_6_backend
