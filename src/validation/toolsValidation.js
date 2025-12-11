@@ -3,14 +3,14 @@ import { Segments } from 'celebrate';
 
 export const createToolSchema = {
   [Segments.BODY]: Joi.object({
-    category: Joi.string().required(), // ObjectId як рядок
-    name: Joi.string().trim().min(1).max(100).required(),
-    description: Joi.string().trim().max(1000).allow(''),
-    pricePerDay: Joi.number().positive().required(),
+    name: Joi.string().trim().min(3).max(96).required(),
+    pricePerDay: Joi.number().min(0).required(),
+    categoryId: Joi.string().required(), // ID -> string (ObjectId)
+    description: Joi.string().trim().min(20).max(2000).required(),
+    rentalTerms: Joi.string().trim().min(20).max(1000).required(),
+    specifications: Joi.object().max(1000).optional(),
     images: Joi.string().uri().required(),
     rating: Joi.number().min(0).max(5).optional(),
-    specifications: Joi.object().optional(),
-    rentalTerms: Joi.string().trim().max(500).optional(),
     bookedDates: Joi.array().items(Joi.string().isoDate()).optional(),
   }),
 };

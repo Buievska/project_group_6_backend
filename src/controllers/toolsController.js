@@ -1,10 +1,20 @@
 import { Tool } from '../models/tool.js';
 
-export const createTool = async (req, res) => {
+export const createTool = async (req, res, next) => {
   try {
+    const { name, pricePerDay, categoryId, description, rentalTerms, specifications } = req.body;
+
+    const imageUrl = req.file ? `uploads/${req.file.originalname}` : null;
+
     const newTool = await Tool.create({
-      ...req.body,
-      owner: req.user.id // автоматично ставимо автора оголошення
+      owner: req.user._id,
+      category: categoryId,
+      name,
+      pricePerDay,
+      description,
+      rentalTerms,
+      specifications,
+      images: imageUrl,
     });
 
     res.status(201).json(newTool);
