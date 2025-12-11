@@ -14,10 +14,11 @@ import toolsRoutes from './routes/toolsRoutes.js';
 import bookingsRoutes from './routes/bookingsRoutes.js';
 import categoriesRoutes from './routes/categoriesRoutes.js';
 import feedbacksRoutes from './routes/feedbacksRoutes.js';
-
+import { errors } from 'celebrate';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { logger } from './middlewares/logger.js';
+import { Tool } from './models/tool.js';
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
@@ -44,6 +45,9 @@ app.use('/api/tools', toolsRoutes);
 app.use('/api/bookings', bookingsRoutes);
 app.use('/api/categories', categoriesRoutes);
 app.use('/api/feedbacks', feedbacksRoutes);
+
+// Middleware celebrate для обробки помилок валідації
+app.use(errors());
 
 app.use(notFoundHandler);
 app.use(errorHandler);
