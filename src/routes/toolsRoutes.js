@@ -5,6 +5,7 @@ import { celebrate } from 'celebrate';
 import { getToolById } from '../controllers/toolsController.js';
 import { createTool } from '../controllers/toolsController.js';
 import { updateTool } from '../controllers/toolsController.js';
+import { deleteTool } from '../controllers/toolsController.js';
 import { authenticate } from '../middlewares/authenticate.js';
 import { uploadImage } from '../middlewares/multer.js';
 
@@ -38,5 +39,8 @@ router.patch(
   updateTool,
 );
 
+// ПРИВАТНЕ ВИДАЛЕННЯ ІНСТРУМЕНТУ
+
+router.delete('/:toolId', authenticate, celebrate(getToolSchema), deleteTool);
 
 export default router;
