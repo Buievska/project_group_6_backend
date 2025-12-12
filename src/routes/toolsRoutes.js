@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { getAllToolsController } from '../controllers/toolsController.js';
 import { celebrate } from 'celebrate';
 
 import { getToolById } from '../controllers/toolsController.js';
@@ -12,6 +13,8 @@ import {
 } from '../validation/toolsValidation.js';
 
 const router = Router();
+
+router.get('/', getAllToolsController);
 
 // Отримати інструмент по ID (публічний)
 router.get('/:toolId', celebrate(getToolSchema), getToolById);
