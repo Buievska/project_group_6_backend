@@ -2,15 +2,16 @@ import { Schema, model } from 'mongoose';
 
 const feedbackSchema = new Schema(
   {
-    rating: {
+    rate: {
       type: Number,
-      required: [true, 'Rating is required'],
+      required: [true, 'Rate is required'],
       min: 1,
       max: 5,
       default: 5,
       index: true,
     },
-    comment: {
+
+    description: {
       type: String,
       maxLength: 500,
       trim: true,
