@@ -3,12 +3,14 @@ import { celebrate } from 'celebrate';
 
 import { getToolById } from '../controllers/toolsController.js';
 import { createTool } from '../controllers/toolsController.js';
+import { updateTool } from '../controllers/toolsController.js';
 import { authenticate } from '../middlewares/authenticate.js';
 import { uploadImage } from '../middlewares/multer.js';
 
 import {
   getToolSchema,
   createToolSchema,
+  updateToolSchema,
 } from '../validation/toolsValidation.js';
 
 const router = Router();
@@ -24,5 +26,14 @@ router.post(
   celebrate(createToolSchema),
   createTool,
 );
+
+router.patch(
+  '/:toolId',
+  authenticate,
+  uploadImage,
+  celebrate(updateToolSchema),
+  updateTool,
+);
+
 
 export default router;
