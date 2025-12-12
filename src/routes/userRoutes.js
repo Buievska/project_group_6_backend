@@ -2,11 +2,11 @@ import { Router } from 'express';
 import { celebrate } from 'celebrate';
 
 import {
-  // userIdSchema,
+  userIdSchema,
   getUserToolsSchema,
 } from '../validation/userValidation.js';
 import {
-  // getUserById,
+  getUserById,
   getUserTools,
   getCurrentUser,
 } from '../controllers/userController.js';
@@ -18,6 +18,6 @@ router.get('/current', authenticate, getCurrentUser);
 
 router.get('/:userId/tools', celebrate(getUserToolsSchema), getUserTools);
 
-// router.get('/:userId', celebrate(userIdSchema), getUserById);
+router.get('/:userId', celebrate(userIdSchema), getUserById);
 
 export default router;
