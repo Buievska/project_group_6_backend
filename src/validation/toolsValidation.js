@@ -31,3 +31,19 @@ export const createToolSchema = {
     bookedDates: Joi.array().items(Joi.string().isoDate()).optional(),
   }),
 };
+
+
+export const updateToolSchema = {
+  [Segments.PARAMS]: Joi.object({
+    toolId: Joi.custom(objectIdValidator).required(),
+  }),
+
+  [Segments.BODY]: Joi.object({
+    name: Joi.string().trim().min(3).max(96).optional(),
+    pricePerDay: Joi.number().min(0).optional(),
+    categoryId: Joi.string().custom(objectIdValidator).optional(),
+    description: Joi.string().trim().min(20).max(2000).optional(),
+    rentalTerms: Joi.string().trim().min(20).max(1000).optional(),
+    specifications: Joi.object().optional(),
+  }).min(1),
+};
