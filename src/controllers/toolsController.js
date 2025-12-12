@@ -79,8 +79,6 @@ export const getTools = async (req, res) => {
   }
 };
 
-
-
 export const updateTool = async (req, res, next) => {
   try {
     const { toolId } = req.params;
@@ -103,7 +101,9 @@ export const updateTool = async (req, res, next) => {
       specifications,
     } = req.body;
 
-    const imageUrl = req.file ? `uploads/${req.file.originalname}` : tool.images;
+    const imageUrl = req.file
+      ? `uploads/${req.file.originalname}`
+      : tool.images;
 
     tool.name = name ?? tool.name;
     tool.pricePerDay = pricePerDay ?? tool.pricePerDay;

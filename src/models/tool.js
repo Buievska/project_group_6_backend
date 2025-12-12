@@ -4,12 +4,14 @@ const toolSchema = new Schema(
   {
     owner: {
       type: Schema.Types.ObjectId,
+
       ref: 'User',
       required: true,
     },
 
     category: {
       type: Schema.Types.ObjectId,
+
       ref: 'Category',
       required: true,
     },
@@ -39,6 +41,7 @@ const toolSchema = new Schema(
 
     specifications: {
       type: Object,
+
       default: {},
     },
 
@@ -48,6 +51,7 @@ const toolSchema = new Schema(
 
     bookedDates: {
       type: [String], // масив дат
+
       default: [],
     },
 

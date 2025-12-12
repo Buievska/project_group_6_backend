@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { celebrate } from 'celebrate';
+
 import {
   userIdSchema,
   getUserToolsSchema,
@@ -15,8 +16,8 @@ const router = Router();
 
 router.get('/current', authenticate, getCurrentUser);
 
-router.get('/:userId', celebrate(userIdSchema), getUserById);
-
 router.get('/:userId/tools', celebrate(getUserToolsSchema), getUserTools);
+
+router.get('/:userId', celebrate(userIdSchema), getUserById);
 
 export default router;
