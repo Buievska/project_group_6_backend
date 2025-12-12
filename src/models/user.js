@@ -1,3 +1,4 @@
+
 import { Schema, model } from "mongoose";
 
 const userSchema = new Schema ({
@@ -26,4 +27,5 @@ userSchema.methods.toJSON = function () {
 };
 
 export const User = model("User", userSchema);
+
 

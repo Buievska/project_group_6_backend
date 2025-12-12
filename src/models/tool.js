@@ -6,6 +6,7 @@ const toolSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'users',
       required: true
+
     },
 
     category: {
@@ -18,7 +19,6 @@ const toolSchema = new Schema(
       type: String,
       required: true
     },
-
     description: {
       type: String
     },
@@ -31,6 +31,7 @@ const toolSchema = new Schema(
     images: {
       type: String,
       required: true
+
     },
 
     rating: {
@@ -50,11 +51,13 @@ const toolSchema = new Schema(
     bookedDates: {
       type: [String], // масив дат
       default: []
+
     },
 
     feedbacks: [
       {
         type: Schema.Types.ObjectId,
+
         ref: 'feedbacks'
       }
     ]
