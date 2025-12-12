@@ -127,7 +127,6 @@ export const deleteTool = async (req, res, next) => {
 
     const tool = await Tool.findOneAndDelete({
       _id: toolId,
-      owner: req.user.owner,
     });
 
     if (!tool) {

@@ -41,6 +41,6 @@ router.patch(
 
 // ПРИВАТНЕ ВИДАЛЕННЯ ІНСТРУМЕНТУ
 
-router.delete('/:toolId', authenticate, celebrate(getToolSchema), deleteTool);
+router.delete('/:toolId', celebrate(getToolSchema), deleteTool);
 
 export default router;
