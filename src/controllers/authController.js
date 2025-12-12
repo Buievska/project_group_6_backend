@@ -1,4 +1,3 @@
-
 import createHttpError from 'http-errors';
 import bcrypt from 'bcryptjs';
 import { User } from '../models/user.js';
@@ -59,3 +58,4 @@ export const logoutUser = async (req, res) => {
   res.clearCookie('refreshToken');
 
   res.status(204).send();
+};

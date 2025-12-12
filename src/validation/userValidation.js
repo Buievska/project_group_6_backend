@@ -5,6 +5,12 @@ const objectIdValidator = (value, helpers) => {
   return !isValidObjectId(value) ? helpers.message('Invalid id format') : value;
 };
 
+export const userIdSchema = {
+  [Segments.PARAMS]: Joi.object({
+    userId: Joi.string().custom(objectIdValidator).required(),
+  }),
+};
+
 export const getUserToolsSchema = {
   [Segments.PARAMS]: Joi.object({
     userId: Joi.string().custom(objectIdValidator).required(),

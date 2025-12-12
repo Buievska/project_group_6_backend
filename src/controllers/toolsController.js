@@ -45,9 +45,8 @@ export const createTool = async (req, res, next) => {
       description,
       rentalTerms,
       specifications,
+      images,
     } = req.body;
-
-    const imageUrl = req.file ? `uploads/${req.file.originalname}` : null;
 
     const newTool = await Tool.create({
       owner: req.user._id,
@@ -57,7 +56,7 @@ export const createTool = async (req, res, next) => {
       description,
       rentalTerms,
       specifications,
-      images: imageUrl,
+      images: images,
     });
 
     res.status(201).json(newTool);

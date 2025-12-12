@@ -1,4 +1,3 @@
-
 import Joi from 'joi';
 import { Segments } from 'celebrate';
 import { isValidObjectId } from 'mongoose';
@@ -18,14 +17,6 @@ export const getToolSchema = {
   }),
 };
 
-export const loginUserSchema = {
-    [Segments.BODY]: Joi.object({
-        email: Joi.string().email().required(),
-        password: Joi.string().required(),
-
-    }),
-  };
-
 // ====== POST /tools ======
 export const createToolSchema = {
   [Segments.BODY]: Joi.object({
@@ -40,7 +31,6 @@ export const createToolSchema = {
     bookedDates: Joi.array().items(Joi.string().isoDate()).optional(),
   }),
 };
-
 
 export const updateToolSchema = {
   [Segments.PARAMS]: Joi.object({
