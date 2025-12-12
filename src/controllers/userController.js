@@ -2,6 +2,25 @@ import { Tool } from '../models/tool.js';
 import { User } from '../models/user.js';
 import createHttpError from 'http-errors';
 
+export const getCurrentUser = async (req, res, next) => {
+  try {
+    const { _id, name, email, avatarUrl } = req.user;
+
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched current user',
+      data: {
+        _id,
+        name,
+        email,
+        avatarUrl,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getUserTools = async (req, res, next) => {
   try {
     const { userId } = req.params;
@@ -40,16 +59,20 @@ export const getUserTools = async (req, res, next) => {
 };
 
 export const getUserById = async (req, res, next) => {
-  const { userId } = req.params;
-  const user = await User.findById(userId);
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId);
 
-  if (!user) {
-    return next(createHttpError(404, 'User not found'));
+    if (!user) {
+      throw createHttpError(404, 'User not found');
+    }
+
+    res.status(200).json({
+      id: user._id,
+      name: user.name,
+      avatarUrl: user.avatarUrl,
+    });
+  } catch (error) {
+    next(error);
   }
-
-  res.status(200).json({
-    id: user._id,
-    name: user.name,
-    avatarUrl: user.avatarUrl,
-  });
 };
