@@ -1,18 +1,18 @@
 import multer from 'multer';
-import createHttpError from 'http-errors';
 
 const storage = multer.memoryStorage();
 
-const fileFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith('image/')) {
-    cb(null, true);
-  } else {
-    cb(createHttpError(400, 'Only images allowed'), false);
-  }
-};
-
-export const upload = multer({
+export const uploadImage = multer({
   storage,
-  limits: { fileSize: 2 * 1024 * 1024 },
-  fileFilter,
-});
+  limits: {
+    fileSize: 1 * 1024 * 1024, // 1MB
+  },
+  fileFilter: (req, file, cb) => {
+    const allowed = ['image/jpeg', 'image/png'];
+    if (!allowed.includes(file.mimetype)) {
+      cb(new Error('Only .jpg and .png images are allowed'));
+    } else {
+      cb(null, true);
+    }
+  },
+}).single('image');
