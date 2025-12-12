@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
+import { errors } from 'celebrate';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import swaggerUi from 'swagger-ui-express';
@@ -45,7 +46,11 @@ app.use('/api/bookings', bookingsRoutes);
 app.use('/api/categories', categoriesRoutes);
 app.use('/api/feedbacks', feedbacksRoutes);
 
+// Middleware celebrate для обробки помилок валідації
+app.use(errors());
+
 app.use(notFoundHandler);
+app.use(errors());
 app.use(errorHandler);
 
 const startServer = async () => {
