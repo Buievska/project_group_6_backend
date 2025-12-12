@@ -1,3 +1,4 @@
+
 import Joi from 'joi';
 import { Segments } from 'celebrate';
 import { isValidObjectId } from 'mongoose';
@@ -16,6 +17,14 @@ export const getToolSchema = {
     toolId: Joi.custom(objectIdValidator).required(),
   }),
 };
+
+export const loginUserSchema = {
+    [Segments.BODY]: Joi.object({
+        email: Joi.string().email().required(),
+        password: Joi.string().required(),
+
+    }),
+  };
 
 // ====== POST /tools ======
 export const createToolSchema = {
