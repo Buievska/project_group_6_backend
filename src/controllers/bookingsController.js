@@ -7,16 +7,15 @@ export const bookingController = async (req, res) => {
   });
   return res.status(201).json({
     id: booking._id,
-    instrumentId: booking.instrumentId,
+    toolId: booking.toolId,
     userId: booking.userId,
-    startTime: booking.startTime,
-    endTime: booking.endTime,
-    status: booking.status,
+    startDate: booking.startDate,
+    endDate: booking.endDate,
     phone: booking.phone,
-    city: booking.city,
+    deliveryCity: booking.deliveryCity,
     firstName: booking.firstName,
     lastName: booking.lastName,
-    departmentNumber: booking.departmentNumber,
+    deliveryBranch: booking.deliveryBranch,
     createdAt: booking.createdAt
   });
 };

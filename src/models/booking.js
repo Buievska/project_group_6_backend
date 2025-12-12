@@ -3,7 +3,7 @@ import { model } from 'mongoose';
 
 const bookingSchema = new Schema(
   {
-    instrumentId: {
+    toolId: {
       type: Schema.Types.ObjectId,
       ref: 'Instrument',
       required: true
@@ -13,12 +13,12 @@ const bookingSchema = new Schema(
       ref: 'User',
       required: true
     },
-    name: {
+    firstName: {
       type: String,
       required: true,
       trim: true
     },
-    surname: {
+    lastName: {
       type: String,
       required: true,
       trim: true
@@ -28,20 +28,20 @@ const bookingSchema = new Schema(
       required: true,
       trim: true
     },
-    city: {
+    deliveryCity: {
       type: String,
       required: true,
       trim: true
     },
-    departmentNumber: {
+    deliveryBranch: {
       type: String,
       required: true
     },
-    startTime: {
+    startDate: {
       type: Date,
       required: true
     },
-    endTime: {
+    endDate: {
       type: Date,
       required: true
     },
@@ -52,6 +52,6 @@ const bookingSchema = new Schema(
   },
 );
 
-bookingSchema.index({ instrumentId: 1, startTime: 1, endTime: 1 });
+bookingSchema.index({ toolId: 1, startDate: 1, endDate: 1 });
 
 export const Booking = model("Booking", bookingSchema);
