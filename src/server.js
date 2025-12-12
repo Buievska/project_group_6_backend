@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
+import { errors } from 'celebrate';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import swaggerUi from 'swagger-ui-express';
@@ -47,6 +48,7 @@ app.use('/api/feedbacks', feedbacksRoutes);
 
 
 app.use(notFoundHandler);
+app.use(errors());
 app.use(errorHandler);
 
 const startServer = async () => {
