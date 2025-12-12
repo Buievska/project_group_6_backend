@@ -1,3 +1,4 @@
+
 import crypto from 'node:crypto';
 import bcrypt from 'bcrypt';
 import createHttpError from 'http-errors';
@@ -104,4 +105,5 @@ export const refreshSession = async (sessionId, refreshToken) => {
 
   const newSession = await createSession(session.userId);
   return newSession;
+
 };

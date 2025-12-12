@@ -5,64 +5,67 @@ const toolSchema = new Schema(
     owner: {
       type: Schema.Types.ObjectId,
       ref: 'users',
-      required: true,
+      required: true
+
     },
 
     category: {
       type: Schema.Types.ObjectId,
       ref: 'categories',
-      required: true,
+      required: true
     },
 
     name: {
       type: String,
-      required: true,
+      required: true
     },
-
     description: {
-      type: String,
+      type: String
     },
 
     pricePerDay: {
       type: Number,
-      required: true,
+      required: true
     },
 
     images: {
       type: String,
-      required: true,
+      required: true
+
     },
 
     rating: {
       type: Number,
-      default: 0,
+      default: 0
     },
 
     specifications: {
       type: Object,
-      default: {},
+      default: {}
     },
 
     rentalTerms: {
-      type: String,
+      type: String
     },
 
     bookedDates: {
-      type: [String],
-      default: [],
+      type: [String], // масив дат
+      default: []
+
     },
 
     feedbacks: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'feedbacks',
-      },
-    ],
+
+        ref: 'feedbacks'
+      }
+    ]
   },
 
   {
-    timestamps: true,
-  },
+    timestamps: true
+  }
 );
 
 export const Tool = model('Tool', toolSchema);
