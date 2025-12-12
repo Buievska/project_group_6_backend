@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { celebrate } from 'celebrate';
 
 import { getToolById } from '../controllers/toolsController.js';
-import { createTool } from '../controllers/toolController.js';
+import { createTool } from '../controllers/toolsController.js';
 import { authenticate } from '../middlewares/authenticate.js';
 import { uploadImage } from '../middlewares/multer.js';
 
@@ -17,6 +17,12 @@ const router = Router();
 router.get('/:toolId', celebrate(getToolSchema), getToolById);
 
 // Створити інструмент (авторизований)
-router.post('/', authenticate, uploadImage, celebrate(createToolSchema), createTool);
+router.post(
+  '/',
+  authenticate,
+  uploadImage,
+  celebrate(createToolSchema),
+  createTool,
+);
 
 export default router;
