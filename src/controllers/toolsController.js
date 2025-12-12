@@ -78,3 +78,45 @@ export const getTools = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+
+
+export const updateTool = async (req, res, next) => {
+  try {
+    const { toolId } = req.params;
+
+    const tool = await Tool.findById(toolId);
+    if (!tool) {
+      return res.status(404).json({ message: 'Tool not found' });
+    }
+
+    if (tool.owner.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Forbidden: not the owner' });
+    }
+
+    const {
+      name,
+      pricePerDay,
+      categoryId,
+      description,
+      rentalTerms,
+      specifications,
+    } = req.body;
+
+    const imageUrl = req.file ? `uploads/${req.file.originalname}` : tool.images;
+
+    tool.name = name ?? tool.name;
+    tool.pricePerDay = pricePerDay ?? tool.pricePerDay;
+    tool.category = categoryId ?? tool.category;
+    tool.description = description ?? tool.description;
+    tool.rentalTerms = rentalTerms ?? tool.rentalTerms;
+    tool.specifications = specifications ?? tool.specifications;
+    tool.images = imageUrl;
+
+    const updatedTool = await tool.save();
+
+    res.status(200).json(updatedTool);
+  } catch (error) {
+    next(error);
+  }
+};
