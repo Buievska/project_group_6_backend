@@ -122,9 +122,20 @@ export const updateTool = async (req, res, next) => {
 };
 
 export const deleteTool = async (req, res, next) => {
-  const { toolId } = req.params;
+  try {
+    const { toolId } = req.params;
 
-  const tool = await Tool.findOneAndDelete(toolId);
+    const tool = await Tool.findOneAndDelete({
+      _id: toolId,
+      owner: req.user.owner,
+    });
 
-  res.status(200).json(tool);
+    if (!tool) {
+      return res.status(404).json({ message: 'Tool not found' });
+    }
+
+    res.status(200).json({ message: 'Tool deleted', tool });
+  } catch (error) {
+    next(error);
+  }
 };
