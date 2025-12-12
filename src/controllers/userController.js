@@ -10,7 +10,6 @@ export const getUserById = async (req, res, next) => {
   }
 
   res.status(200).json({
-    // _id: { $oid: user._id },
     id: user._id,
     name: user.name,
     avatarUrl: user.avatarUrl,
