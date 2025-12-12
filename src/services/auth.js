@@ -1,8 +1,8 @@
 import crypto from 'node:crypto';
 import bcrypt from 'bcrypt';
 import createHttpError from 'http-errors';
-import User from '../models/user.js';
-import Session from '../models/session.js';
+import { User } from '../models/user.js';
+import { Session } from '../models/session.js';
 
 const FIFTEEN_MINUTES = 15 * 60 * 1000;
 const ONE_DAY = 24 * 60 * 60 * 1000;

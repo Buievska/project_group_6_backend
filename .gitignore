@@ -1,3 +1,6 @@
+
+.env
+
 .vscode
 .DS_Store
 .idea
@@ -144,3 +147,4 @@ vite.config.ts.timestamp-*
 
 
 pullrequest-list.txt
+
