@@ -28,10 +28,12 @@
     "prettier": "^3.7.4"
   },
   "dependencies": {
+    "celebrate": "^15.0.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "http-errors": "^2.0.1",
     "mongoose": "^9.0.1",
     "pino-http": "^11.0.0",
     "pino-pretty": "^13.1.3",
