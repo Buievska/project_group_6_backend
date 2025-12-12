@@ -15,3 +15,22 @@ export const getUserById = async (req, res, next) => {
     avatarUrl: user.avatarUrl,
   });
 };
+
+export const getCurrentUser = async (req, res, next) => {
+  try {
+    const { _id, name, email, avatarUrl } = req.user;
+
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched current user',
+      data: {
+        _id,
+        name,
+        email,
+        avatarUrl,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
