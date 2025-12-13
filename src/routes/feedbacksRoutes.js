@@ -11,7 +11,7 @@ import {
 
 const feedbacksRoutes = Router();
 
-feedbacksRoutes.get('/public', getFeedbacksPublic);
+feedbacksRoutes.get('/', getFeedbacksPublic);
 
 // feedbacksRoutes.post('/', authenticate, createFeedback);
 
