@@ -18,10 +18,7 @@ export const getTools = async ({ page, limit, category, search }) => {
 
   const total = await Tool.countDocuments(filter);
 
-  const tools = await Tool.find(filter)
-    .skip(skip)
-    .limit(limit)
-    .sort({ createdAt: -1 });
+  const tools = await Tool.find(filter).skip(skip).limit(limit);
 
   return {
     total,
