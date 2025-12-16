@@ -64,6 +64,10 @@ app.use('/api/bookings', bookingsRoutes);
 app.use('/api/categories', categoriesRoutes);
 app.use('/api/feedbacks', feedbacksRoutes);
 
+app.get('/', (req, res) => {
+  res.send('API is running 🚀');
+});
+
 app.use(notFoundHandler);
 app.use(errors());
 app.use(errorHandler);
