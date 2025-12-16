@@ -1,5 +1,5 @@
 {
-  "name": "nodejs-hw",
+  "name": "project_group_6_backend",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
@@ -10,16 +10,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Buievska/nodejs-hw.git"
+    "url": "git+https://github.com/Buievska/project_group_6_backend.git"
   },
   "keywords": [],
   "author": "Ania <anna111239@gmail.com>",
   "license": "ISC",
   "type": "module",
   "bugs": {
-    "url": "https://github.com/Buievska/nodejs-hw/issues"
+    "url": "https://github.com/Buievska/project_group_6_backend/issues"
   },
-  "homepage": "https://github.com/Buievska/nodejs-hw#readme",
+  "homepage": "https://github.com/Buievska/project_group_6_backend#readme",
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "eslint": "^9.39.1",
