@@ -1,4 +1,4 @@
-
+// models/user.js
 import { Schema, model } from 'mongoose';
 
 const userSchema = new Schema(
@@ -14,21 +14,26 @@ const userSchema = new Schema(
     // Дані для авторизації
     email: { type: String, unique: true, required: true, trim: true },
     password: { type: String, required: true, minlength: 8, maxlength: 128 },
+
+    // ✅ НОВІ ПОЛЯ для рейтингу
+    averageRating: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 5,
+    },
+    feedbackCount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
   },
   {
     versionKey: false,
   },
 );
 
-//Нам це не потрібно, оскільки у нас немає поля username
-// userSchema.pre('save', function (next) {
-//   if (!this.username) {
-//     this.username = this.email;
-//   }
-//   next();
-// });
-
-//  метод toJSON, щоб видаляти пароль із об'єкта користувача перед відправкою у відповідь
+// Метод toJSON, щоб видаляти пароль із об'єкта користувача перед відправкою у відповідь
 userSchema.methods.toJSON = function () {
   const obj = this.toObject();
   delete obj.password;
@@ -36,4 +41,3 @@ userSchema.methods.toJSON = function () {
 };
 
 export const User = model('User', userSchema);
-
