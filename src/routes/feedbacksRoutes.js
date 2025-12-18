@@ -1,22 +1,17 @@
+// routes/feedbacksRoutes.js
 import { Router } from 'express';
-
-// import { authenticate } from '../middlewares/authenticate.js';
-
+import { authenticate } from '../middlewares/authenticate.js';
 import {
   getFeedbacksPublic,
-  // createFeedback,
-  // deleteFeedback,
-  // updateFeedback,
+  createFeedback,
 } from '../controllers/feedbacksController.js';
 
 const feedbacksRoutes = Router();
 
+// Публічний ендпоінт - отримання списку відгуків
 feedbacksRoutes.get('/', getFeedbacksPublic);
 
-// feedbacksRoutes.post('/', authenticate, createFeedback);
-
-// feedbacksRoutes.patch('/:feedbackId', authenticate, updateFeedback);
-
-// feedbacksRoutes.delete('/:feedbackId', authenticate, deleteFeedback);
+// ✅ Приватний ендпоінт - створення відгуку
+feedbacksRoutes.post('/', authenticate, createFeedback);
 
 export default feedbacksRoutes;
