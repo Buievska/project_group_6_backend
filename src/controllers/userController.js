@@ -76,3 +76,27 @@ export const getUserById = async (req, res, next) => {
     next(error);
   }
 };
+
+export const updateUser = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const { name } = req.body;
+    if (req.user._id.toString() !== userId) {
+      throw createHttpError(403, 'You can only update your own profile');
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { name },
+      { new: true, runValidators: true },
+    );
+
+    if (!updatedUser) {
+      throw createHttpError(404, 'User not found');
+    }
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    next(error);
+  }
+};
