@@ -18,7 +18,1158 @@
         "scheme": "bearer",
         "bearerFormat": "JWT"
       }
+    },
+    "schemas": {
+      "Category": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "6704d9c7f1a3b8c2d5e4f6ac"
+          },
+          "title": {
+            "type": "string",
+            "example": "Інструменти для штукатурки та фарбування"
+          },
+          "description": {
+            "type": "string",
+            "example": "Прискорте фінішні роботи та досягніть професійної якості..."
+          },
+          "keywords": {
+            "type": "string",
+            "example": "оренда фарбопульта, прокат штукатурної станції, безповітряне фарбування"
+          }
+        },
+        "required": ["_id", "title", "description", "keywords"]
+      },
+      "Tool": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string", "example": "692db3ffab59e437964311b7" },
+          "owner": { "type": "string", "example": "6881563901add19ee16fd017" },
+          "category": {
+            "type": "string",
+            "example": "6704d9c7f1a3b8c2d5e4f6a5"
+          },
+          "name": {
+            "type": "string",
+            "example": "Апарат аргонодуговий Jasic TIG-200P AC/DC"
+          },
+          "description": { "type": "string" },
+          "pricePerDay": { "type": "number", "example": 600 },
+          "images": {
+            "type": "string",
+            "example": "https://ftp.goit.study/img/tools-next/692db3ffab59e437964311b7.webp"
+          },
+          "rating": { "type": "number", "example": 5 },
+          "specifications": {
+            "type": "object",
+            "additionalProperties": { "type": "string" }
+          },
+          "rentalTerms": { "type": "string" },
+          "bookedDates": {
+            "type": "array",
+            "items": { "type": "string", "example": "2025-01-10" }
+          },
+          "feedbacks": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Feedback" }
+          },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Feedback": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string", "example": "692db3ffab59e43796432006" },
+          "rate": { "type": "number", "example": 5 },
+          "description": { "type": "string", "example": "" }
+        }
+      },
+      "FeedbackDetailed": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string", "example": "69457647f0c3a538bb49cba3" },
+          "rate": { "type": "number", "example": 5 },
+          "description": {
+            "type": "string",
+            "example": "Інструмент дуже сподобався, працює без проблем!"
+          },
+          "owner": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "example": "694559d0f31229bb60693d3e"
+              },
+              "name": { "type": "string", "example": "Alex" },
+              "avatarUrl": {
+                "type": "string",
+                "example": "https://ac.goit.global/fullstack/react/default-avatar.jpg"
+              }
+            }
+          },
+          "tool": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "example": "692db3ffab59e437964311a7"
+              },
+              "name": { "type": "string", "example": "Бензопила Stihl MS 180" },
+              "images": {
+                "type": "string",
+                "example": "https://ftp.goit.study/img/tools-next/692db3ffab59e437964311a7.webp"
+              }
+            }
+          },
+          "toolOwner": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "example": "6881563901add19ee16fd017"
+              },
+              "name": { "type": "string", "example": "Матвій Савченко" },
+              "averageRating": { "type": "number", "example": 5 },
+              "feedbackCount": { "type": "number", "example": 1 }
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-12-19T15:59:03.225Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-12-19T15:59:03.225Z"
+          }
+        }
+      },
+      "FeedbackDetailedWrapper": {
+        "type": "object",
+        "properties": {
+          "feedback": { "$ref": "#/components/schemas/FeedbackDetailed" }
+        }
+      },
+
+      "FeedbackCreate": {
+        "type": "object",
+        "description": "Тіло запиту для створення відгуку",
+        "properties": {
+          "toolId": { "type": "string", "example": "692db3ffab59e437964311a7" },
+          "rate": { "type": "number", "example": 5 },
+          "description": {
+            "type": "string",
+            "example": "Інструмент дуже сподобався, працює без проблем!"
+          }
+        },
+        "required": ["rate", "tool"]
+      }
     }
   },
-  "paths": {}
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "Реєстрація користувача",
+        "tags": ["Auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "email", "password"],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 32,
+                    "example": "Олена"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "maxLength": 64,
+                    "example": "olena@gmail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 8,
+                    "maxLength": 128,
+                    "example": "mypassword123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Користувач створений",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "64ab12cd34ef567890abcd12"
+                    },
+                    "name": { "type": "string", "example": "Олена" },
+                    "email": { "type": "string", "example": "olena@gmail.com" },
+                    "avatarUrl": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://ac.goit.global/fullstack/react/default-avatar.jpg"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Email вже використовується",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string", "example": "Email in use" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Логін користувача",
+        "tags": ["Auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "olena123@gmail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 8,
+                    "maxLength": 128,
+                    "example": "mypassword123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Успішний логін, повертається користувач",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "64ab12cd34ef567890abcd12"
+                    },
+                    "name": { "type": "string", "example": "Олена" },
+                    "email": {
+                      "type": "string",
+                      "example": "olena123@gmail.com"
+                    },
+                    "avatarUrl": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://ac.goit.global/fullstack/react/default-avatar.jpg"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Невірні дані (email або пароль)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid credentials"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "summary": "Вихід користувача",
+        "tags": ["Auth"],
+        "description": "Приватний ендпоінт. Видаляє сесію та очищає cookies.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Успішний логаут. Сесію видалено, cookies очищено."
+          },
+          "401": {
+            "description": "Not authorized"
+          }
+        }
+      }
+    },
+    "/users/current": {
+      "get": {
+        "summary": "Отримати поточного користувача",
+        "tags": ["Users"],
+        "description": "Приватний ендпоінт. Повертає дані авторизованого користувача",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Поточний користувач",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully fetched current user"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string",
+                          "example": "694280e4c458bb0a3b49d941"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Олена"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "olena123@gmail.com"
+                        },
+                        "avatarUrl": {
+                          "type": "string",
+                          "format": "uri",
+                          "example": "https://ac.goit.global/fullstack/react/default-avatar.jpg"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized"
+          }
+        }
+      }
+    },
+    "/users/{userId}": {
+      "get": {
+        "summary": "Отримати публічну інформацію про користувача",
+        "tags": ["Users"],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID користувача, який потрібно отримати",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "694280e4c458bb0a3b49d941"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Публічна інформація про користувача",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "integer", "example": 200 },
+                    "message": { "type": "string", "example": "User found" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string",
+                          "example": "694280e4c458bb0a3b49d941"
+                        },
+                        "name": { "type": "string", "example": "Олена" },
+                        "email": {
+                          "type": "string",
+                          "example": "olena123@gmail.com"
+                        },
+                        "avatarUrl": {
+                          "type": "string",
+                          "format": "uri",
+                          "example": "https://ac.goit.global/fullstack/react/default-avatar.jpg"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Користувача не знайдено"
+          }
+        }
+      }
+    },
+    "/users/{userId}/tools": {
+      "get": {
+        "summary": "Список інструментів конкретного користувача",
+        "tags": ["Users"],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID користувача",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "694280e4c458bb0a3b49d941"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список інструментів користувача",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": { "type": "string", "example": "tool123" },
+                      "title": { "type": "string", "example": "Дриль" },
+                      "category": {
+                        "type": "string",
+                        "example": "Електроінструменти"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Користувача або інструменти не знайдені"
+          }
+        }
+      }
+    },
+    "/categories": {
+      "get": {
+        "summary": "Отримати список всіх категорій",
+        "tags": ["Categories"],
+        "description": "Публічний ендпоінт. Повертає всі категорії інструментів.",
+        "responses": {
+          "200": {
+            "description": "Успішно повернуто список категорій",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Category"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tools": {
+      "get": {
+        "summary": "Отримати список інструментів",
+        "tags": ["Tools"],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 10 }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "ID категорій через кому"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Пошук за назвою інструменту"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список інструментів",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "page": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "limit": {
+                      "type": "integer",
+                      "example": 10
+                    },
+                    "total": {
+                      "type": "integer",
+                      "example": 42
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Tool"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Створити новий інструмент (приватний)",
+        "tags": ["Tools"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "categoryId": {
+                    "type": "string",
+                    "example": "6704d9c7f1a3b8c2d5e4f6a8"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "Дриль Bosch GSB 13 RE"
+                  },
+                  "description": { "type": "string" },
+                  "pricePerDay": { "type": "number", "example": 250 },
+                  "images": {
+                    "type": "string",
+                    "example": "https://ftp.goit.study/img/tools-next/example.webp"
+                  },
+                  "specifications": {
+                    "type": "object",
+                    "additionalProperties": { "type": "string" }
+                  },
+                  "rentalTerms": { "type": "string" }
+                },
+                "required": ["categoryId", "name", "pricePerDay", "images"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Інструмент успішно створений",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Tool" }
+              }
+            }
+          },
+          "400": {
+            "description": "Помилка валідації або даних",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "error" },
+                    "message": {
+                      "type": "string",
+                      "example": "Validation failed"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Неавторизований доступ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "error" },
+                    "message": { "type": "string", "example": "Unauthorized" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tools/{id}": {
+      "get": {
+        "summary": "Отримати детальну інформацію про інструмент за його ID",
+        "tags": ["Tools"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "692db3ffab59e437964311b7"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Інформація про інструмент",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Tool" }
+              }
+            }
+          },
+          "404": {
+            "description": "Інструмент не знайдено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "error" },
+                    "message": { "type": "string", "example": "Tool not found" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Редагувати інструмент (приватний, тільки власник)",
+        "tags": ["Tools"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "ID інструменту для редагування"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "categoryId": {
+                    "type": "string",
+                    "example": "6704d9c7f1a3b8c2d5e4f6a8"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "Дриль Bosch GSB 13 RE"
+                  },
+                  "description": { "type": "string" },
+                  "pricePerDay": { "type": "number", "example": 300 },
+                  "images": {
+                    "type": "string",
+                    "example": "https://ftp.goit.study/img/tools-next/example.webp"
+                  },
+                  "specifications": {
+                    "type": "object",
+                    "additionalProperties": { "type": "string" }
+                  },
+                  "rentalTerms": {
+                    "type": "string",
+                    "example": "Мінімальний термін оренди — 1 день"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Інструмент успішно відредаговано",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Tool" }
+              }
+            }
+          },
+          "400": {
+            "description": "Помилка валідації або даних",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "error" },
+                    "message": {
+                      "type": "string",
+                      "example": "Validation failed"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Неавторизований доступ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "error" },
+                    "message": { "type": "string", "example": "Unauthorized" }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Доступ заборонено — не власник",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "error" },
+                    "message": {
+                      "type": "string",
+                      "example": "Forbidden: you are not the owner"
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Інструмент не знайдено",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status": { "type": "string", "example": "error" },
+                      "message": {
+                        "type": "string",
+                        "example": "Tool not found"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Видалити інструмент (приватний, тільки власник)",
+        "tags": ["Tools"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "ID інструменту для видалення"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Інструмент успішно видалено",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Tool" }
+              }
+            }
+          },
+          "401": {
+            "description": "Неавторизований доступ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "error" },
+                    "message": { "type": "string", "example": "Unauthorized" }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Доступ заборонено — не власник",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "error" },
+                    "message": {
+                      "type": "string",
+                      "example": "Forbidden: you are not the owner"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Інструмент не знайдено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "error" },
+                    "message": { "type": "string", "example": "Tool not found" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bookings": {
+      "post": {
+        "summary": "Створити запит на бронювання інструменту (приватний)",
+        "tags": ["Bookings"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "toolId": {
+                    "type": "string",
+                    "example": "69440f877ee8028886739ce6"
+                  },
+                  "firstName": { "type": "string", "example": "Олена" },
+                  "lastName": { "type": "string", "example": "Петренко" },
+                  "phone": { "type": "string", "example": "+380123456789" },
+                  "deliveryCity": { "type": "string", "example": "Київ" },
+                  "deliveryBranch": {
+                    "type": "string",
+                    "example": "Відділення 12"
+                  },
+                  "startDate": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2025-12-20"
+                  },
+                  "endDate": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2025-12-22"
+                  }
+                },
+                "required": [
+                  "toolId",
+                  "firstName",
+                  "lastName",
+                  "phone",
+                  "deliveryCity",
+                  "deliveryBranch",
+                  "startDate",
+                  "endDate"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Бронювання успішно створено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "69441d4a3c23b14e3d57d4ca"
+                    },
+                    "toolId": {
+                      "type": "string",
+                      "example": "69440f877ee8028886739ce6"
+                    },
+                    "userId": {
+                      "type": "string",
+                      "example": "694280e4c458bb0a3b49d941"
+                    },
+                    "firstName": { "type": "string", "example": "Олена" },
+                    "lastName": { "type": "string", "example": "Петренко" },
+                    "phone": { "type": "string", "example": "+380123456789" },
+                    "deliveryCity": { "type": "string", "example": "Київ" },
+                    "deliveryBranch": {
+                      "type": "string",
+                      "example": "Відділення 12"
+                    },
+                    "startDate": {
+                      "type": "string",
+                      "format": "date",
+                      "example": "2025-12-20"
+                    },
+                    "endDate": {
+                      "type": "string",
+                      "format": "date",
+                      "example": "2025-12-22"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-12-18T15:27:06.824Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Помилка валідації або конфлікт дат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "error" },
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid data or booking conflict"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Неавторизований доступ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "error" },
+                    "message": { "type": "string", "example": "Unauthorized" }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Інструмент не знайдено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "error" },
+                    "message": { "type": "string", "example": "Tool not found" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/feedbacks": {
+      "get": {
+        "tags": ["Feedbacks"],
+        "summary": "Отримати список відгуків з пагінацією",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": { "type": "integer", "default": 1 },
+            "description": "Номер сторінки"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": { "type": "integer", "default": 10 },
+            "description": "Кількість відгуків на сторінці"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список відгуків",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "success" },
+                    "code": { "type": "number", "example": 200 },
+                    "page": { "type": "number", "example": 1 },
+                    "perPage": { "type": "number", "example": 10 },
+                    "totalFeedbacks": { "type": "number", "example": 29 },
+                    "totalPages": { "type": "number", "example": 3 },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "feedbacks": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/FeedbackDetailed"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Feedbacks"],
+        "summary": "Створити новий відгук",
+        "description": "Приватний ендпоінт. Потрібен Bearer токен.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/FeedbackCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Відгук успішно створено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "success" },
+                    "code": { "type": "integer", "example": 201 },
+                    "message": {
+                      "type": "string",
+                      "example": "Відгук успішно створено"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/FeedbackDetailedWrapper"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Некоректні дані запиту",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "error" },
+                    "message": {
+                      "type": "string",
+                      "example": "Rate is required"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Помилка авторизації",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "error" },
+                    "message": { "type": "string", "example": "Unauthorized" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
