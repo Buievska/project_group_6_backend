@@ -9,6 +9,7 @@ import {
   getUserById,
   getUserTools,
   getCurrentUser,
+  updateUser,
 } from '../controllers/userController.js';
 import { authenticate } from '../middlewares/authenticate.js';
 
@@ -19,5 +20,7 @@ router.get('/current', authenticate, getCurrentUser);
 router.get('/:userId/tools', celebrate(getUserToolsSchema), getUserTools);
 
 router.get('/:userId', celebrate(userIdSchema), getUserById);
+
+router.patch('/:userId', authenticate, updateUser);
 
 export default router;
