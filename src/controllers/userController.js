@@ -80,16 +80,21 @@ export const getUserById = async (req, res, next) => {
 export const updateUser = async (req, res, next) => {
   try {
     const { userId } = req.params;
-    const { name } = req.body;
+    const { name, avatarUrl } = req.body;
+
     if (req.user._id.toString() !== userId) {
-      throw createHttpError(403, 'You can only update your own profile');
+      throw createHttpError(403, 'Access denied');
     }
 
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { name },
-      { new: true, runValidators: true },
-    );
+    const updateData = { name };
+    if (avatarUrl) {
+      updateData.avatarUrl = avatarUrl;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!updatedUser) {
       throw createHttpError(404, 'User not found');
