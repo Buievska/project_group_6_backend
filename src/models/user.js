@@ -17,6 +17,18 @@ const userSchema = new Schema(
       type: String,
       default: null,
     },
+
+    averageRating: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 5,
+    },
+    feedbackCount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
   },
   {
     versionKey: false,
@@ -24,15 +36,7 @@ const userSchema = new Schema(
   },
 );
 
-//Нам це не потрібно, оскільки у нас немає поля username
-// userSchema.pre('save', function (next) {
-//   if (!this.username) {
-//     this.username = this.email;
-//   }
-//   next();
-// });
-
-//  метод toJSON, щоб видаляти пароль із об'єкта користувача перед відправкою у відповідь
+// Метод toJSON
 userSchema.methods.toJSON = function () {
   const obj = this.toObject();
   delete obj.password;
