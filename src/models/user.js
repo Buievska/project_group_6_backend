@@ -1,4 +1,3 @@
-// models/user.js
 import { Schema, model } from 'mongoose';
 
 const userSchema = new Schema(
@@ -14,8 +13,11 @@ const userSchema = new Schema(
     // Дані для авторизації
     email: { type: String, unique: true, required: true, trim: true },
     password: { type: String, required: true, minlength: 8, maxlength: 128 },
+    refreshToken: {
+      type: String,
+      default: null,
+    },
 
-    // ✅ НОВІ ПОЛЯ для рейтингу
     averageRating: {
       type: Number,
       default: 0,
@@ -30,10 +32,10 @@ const userSchema = new Schema(
   },
   {
     versionKey: false,
+    timestamps: true,
   },
 );
 
-// Метод toJSON, щоб видаляти пароль із об'єкта користувача перед відправкою у відповідь
 userSchema.methods.toJSON = function () {
   const obj = this.toObject();
   delete obj.password;

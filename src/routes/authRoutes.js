@@ -4,11 +4,18 @@ import {
   loginUserSchema,
   registerUserSchema,
 } from '../validation/authValidation.js';
-import { loginUser, registerUser } from '../controllers/authController.js';
-import { logoutUser } from '../controllers/authController.js';
+import {
+  refreshUser,
+  loginUser,
+  registerUser,
+  logoutUser,
+} from '../controllers/authController.js';
+
 import { authenticate } from '../middlewares/authenticate.js';
 
 const router = Router();
+
+router.post('/refresh', refreshUser);
 
 // Login (public)
 router.post('/login', celebrate(loginUserSchema), loginUser);
