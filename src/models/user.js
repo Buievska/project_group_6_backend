@@ -1,4 +1,3 @@
-
 import { Schema, model } from 'mongoose';
 
 const userSchema = new Schema(
@@ -14,9 +13,14 @@ const userSchema = new Schema(
     // Дані для авторизації
     email: { type: String, unique: true, required: true, trim: true },
     password: { type: String, required: true, minlength: 8, maxlength: 128 },
+    refreshToken: {
+      type: String,
+      default: null,
+    },
   },
   {
     versionKey: false,
+    timestamps: true,
   },
 );
 
@@ -36,4 +40,3 @@ userSchema.methods.toJSON = function () {
 };
 
 export const User = model('User', userSchema);
-
