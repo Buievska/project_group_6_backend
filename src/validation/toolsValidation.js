@@ -26,7 +26,7 @@ export const createToolSchema = {
     description: Joi.string().trim().min(20).max(2000).required(),
     rentalTerms: Joi.string().trim().min(20).max(1000).required(),
     specifications: Joi.object().max(1000).optional(),
-    images: Joi.string().uri().required(),
+    // images: Joi.string().uri().required(),
     rating: Joi.number().min(0).max(5).optional(),
     bookedDates: Joi.array().items(Joi.string().isoDate()).optional(),
   }),
