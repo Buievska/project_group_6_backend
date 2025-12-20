@@ -90,13 +90,19 @@ export const logoutUser = async (sessionId) => {
   await Session.deleteOne({ _id: sessionId });
 };
 
-export const refreshSession = async (sessionId, refreshToken) => {
+export const refreshSession = async ({ sessionId, refreshToken }) => {
+  // Додатковий захист: якщо чогось немає, не ліземо в базу
+  if (!sessionId || !refreshToken) {
+    return null;
+  }
+
   const session = await Session.findOne({ _id: sessionId, refreshToken });
 
   if (!session) throw createHttpError(401, 'Session not found');
 
   const isSessionTokenExpired =
     new Date() > new Date(session.refreshTokenValidUntil);
+
   if (isSessionTokenExpired)
     throw createHttpError(401, 'Session token expired');
 
