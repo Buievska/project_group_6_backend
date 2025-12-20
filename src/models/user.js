@@ -36,7 +36,6 @@ const userSchema = new Schema(
   },
 );
 
-// Метод toJSON
 userSchema.methods.toJSON = function () {
   const obj = this.toObject();
   delete obj.password;

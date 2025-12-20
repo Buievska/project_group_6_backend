@@ -2,7 +2,11 @@ import createHttpError from 'http-errors';
 import bcrypt from 'bcryptjs';
 import { User } from '../models/user.js';
 import { Session } from '../models/session.js';
-import { createSession, setSessionCookies } from '../services/auth.js';
+import {
+  createSession,
+  setSessionCookies,
+  refreshSession,
+} from '../services/auth.js';
 
 // Login
 
@@ -47,12 +51,41 @@ export const registerUser = async (req, res) => {
   res.status(201).json(newUser);
 };
 
+export const refreshUser = async (req, res) => {
+  const { sessionId, refreshToken } = req.cookies;
+
+  const tokenToRefresh = sessionId || refreshToken;
+
+  if (!tokenToRefresh) {
+    throw createHttpError(401, 'Session missing');
+  }
+
+  const newSession = await refreshSession({ sessionId, refreshToken });
+
+  if (!newSession) {
+    throw createHttpError(403, 'Session expired or invalid');
+  }
+
+  setSessionCookies(res, newSession);
+
+  res.status(200).json({
+    status: 200,
+    message: 'Successfully refreshed session!',
+    data: {
+      accessToken: newSession.accessToken,
+    },
+  });
+};
+
 export const logoutUser = async (req, res) => {
-  const { sessionId } = req.cookies;
+  const { sessionId, refreshToken } = req.cookies;
 
   if (sessionId) {
     await Session.deleteOne({ _id: sessionId });
+  } else if (refreshToken) {
+    await Session.deleteOne({ refreshToken: refreshToken });
   }
+
   res.clearCookie('sessionId');
   res.clearCookie('accessToken');
   res.clearCookie('refreshToken');
