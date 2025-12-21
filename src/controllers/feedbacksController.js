@@ -4,6 +4,7 @@ import { Feedback } from '../models/feedback.js';
 import { Tool } from '../models/tool.js';
 import { User } from '../models/user.js';
 import { createFeedbackSchema } from '../validation/feedbackValidation.js';
+import mongoose from 'mongoose';
 
 // ✅ Існуючий публічний ендпоінт
 export const getFeedbacksPublic = async (req, res, next) => {
@@ -72,7 +73,10 @@ export const createFeedback = async (req, res, next) => {
 
     // 3. Перевіряємо що користувач не залишає відгук на власний інструмент
     if (tool.owner.toString() === userId.toString()) {
-      throw createHttpError(403, 'Ви не можете залишити відгук на власний інструмент');
+      throw createHttpError(
+        403,
+        'Ви не можете залишити відгук на власний інструмент',
+      );
     }
 
     // 4. Перевіряємо чи користувач вже залишав відгук на цей інструмент
@@ -122,7 +126,9 @@ export const createFeedback = async (req, res, next) => {
   } catch (error) {
     // Обробка помилки унікального індексу MongoDB
     if (error.code === 11000) {
-      return next(createHttpError(409, 'Ви вже залишили відгук на цей інструмент'));
+      return next(
+        createHttpError(409, 'Ви вже залишили відгук на цей інструмент'),
+      );
     }
     next(error);
   }
@@ -131,7 +137,9 @@ export const createFeedback = async (req, res, next) => {
 // ✅ Функція для перерахунку рейтингу інструменту
 const recalculateToolRating = async (toolId) => {
   const result = await Feedback.aggregate([
-    { $match: { tool: toolId } },
+    {
+      $match: { tool: new mongoose.Types.ObjectId(toolId) },
+    },
     {
       $group: {
         _id: '$tool',
@@ -140,11 +148,12 @@ const recalculateToolRating = async (toolId) => {
     },
   ]);
 
-  const newRating = result.length > 0 ? Math.round(result[0].averageRating * 10) / 10 : 0;
+  // Якщо результат є, беремо середнє, якщо немає — ставимо 0
+  const newRating =
+    result.length > 0 ? Math.round(result[0].averageRating * 10) / 10 : 0;
 
   await Tool.findByIdAndUpdate(toolId, { rating: newRating });
 };
-
 // ✅ Функція для перерахунку рейтингу користувача (власника інструментів)
 const recalculateUserRating = async (userId) => {
   // Отримуємо всі відгуки на інструменти цього користувача
