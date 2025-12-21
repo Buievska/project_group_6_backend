@@ -185,3 +185,21 @@ const recalculateUserRating = async (userId) => {
     });
   }
 };
+
+export const getToolFeedbacks = async (req, res, next) => {
+  const { toolId } = req.params;
+
+  try {
+    const feedbacks = await Feedback.find({ tool: toolId })
+      .populate('owner', 'name avatarUrl')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      status: 'success',
+      code: 200,
+      data: { feedbacks },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
