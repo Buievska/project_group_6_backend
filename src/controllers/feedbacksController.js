@@ -190,14 +190,24 @@ export const getToolFeedbacks = async (req, res, next) => {
   const { toolId } = req.params;
 
   try {
-    const feedbacks = await Feedback.find({ tool: toolId })
-      .populate('owner', 'name avatarUrl')
-      .sort({ createdAt: -1 });
+    const tool = await Tool.findById(toolId).populate({
+      path: 'feedbacks',
+      populate: {
+        path: 'owner',
+        select: 'name avatarUrl',
+      },
+    });
+
+    if (!tool) {
+      throw createHttpError(404, 'Інструмент не знайдено');
+    }
 
     res.status(200).json({
       status: 'success',
       code: 200,
-      data: { feedbacks },
+      data: {
+        feedbacks: tool.feedbacks,
+      },
     });
   } catch (error) {
     next(error);
