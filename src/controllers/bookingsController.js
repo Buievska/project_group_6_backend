@@ -61,3 +61,30 @@ export const getUserBookingsController = async (req, res) => {
     return res.status(500).json({ message: 'Помилка отримання списку' });
   }
 };
+
+export const deleteBookingController = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const booking = await Booking.findById(id);
+
+    if (!booking) {
+      return res.status(404).json({ message: 'Бронювання не знайдено' });
+    }
+
+    if (booking.userId.toString() !== req.user._id.toString()) {
+      return res
+        .status(403)
+        .json({ message: 'У вас немає прав для видалення цього бронювання' });
+    }
+
+    await Booking.findByIdAndDelete(id);
+
+    return res.status(200).json({ message: 'Бронювання успішно скасовано' });
+  } catch (error) {
+    console.error('Delete booking error:', error);
+    return res
+      .status(500)
+      .json({ message: 'Помилка при видаленні бронювання' });
+  }
+};
