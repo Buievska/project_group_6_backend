@@ -6,44 +6,48 @@ const bookingSchema = new Schema(
     toolId: {
       type: Schema.Types.ObjectId,
       ref: 'Tool',
-      required: true
+      required: true,
     },
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: true
+      required: true,
+    },
+    totalPrice: {
+      type: Number,
+      required: true,
     },
     firstName: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     lastName: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     phone: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     deliveryCity: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     deliveryBranch: {
       type: String,
-      required: true
+      required: true,
     },
     startDate: {
       type: Date,
-      required: true
+      required: true,
     },
     endDate: {
       type: Date,
-      required: true
+      required: true,
     },
   },
   {
@@ -54,4 +58,4 @@ const bookingSchema = new Schema(
 
 bookingSchema.index({ toolId: 1, startDate: 1, endDate: 1 });
 
-export const Booking = model("Booking", bookingSchema);
+export const Booking = model('Booking', bookingSchema);

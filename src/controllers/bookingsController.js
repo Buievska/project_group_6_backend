@@ -1,21 +1,63 @@
-import { Booking } from "../models/booking.js";
+import { Booking } from '../models/booking.js';
+import { Tool } from '../models/tool.js';
+
+const calculateDays = (start, end) => {
+  const oneDay = 24 * 60 * 60 * 1000;
+  const diffDays = Math.round(
+    Math.abs((new Date(end) - new Date(start)) / oneDay),
+  );
+  return diffDays > 0 ? diffDays : 1;
+};
 
 export const bookingController = async (req, res) => {
-  const booking = await Booking.create({
-    ...req.body,
-    userId: req.user._id,
-  });
-  return res.status(201).json({
-    id: booking._id,
-    toolId: booking.toolId,
-    userId: booking.userId,
-    startDate: booking.startDate,
-    endDate: booking.endDate,
-    phone: booking.phone,
-    deliveryCity: booking.deliveryCity,
-    firstName: booking.firstName,
-    lastName: booking.lastName,
-    deliveryBranch: booking.deliveryBranch,
-    createdAt: booking.createdAt
-  });
+  try {
+    const { toolId, startDate, endDate } = req.body;
+
+    const tool = await Tool.findById(toolId);
+    if (!tool) {
+      return res.status(404).json({ message: 'Інструмент не знайдено' });
+    }
+
+    const days = calculateDays(startDate, endDate);
+    const calculatedPrice = days * tool.pricePerDay;
+
+    const booking = await Booking.create({
+      ...req.body,
+      userId: req.user._id,
+      totalPrice: calculatedPrice,
+    });
+
+    return res.status(201).json({
+      id: booking._id,
+      toolId: booking.toolId,
+      userId: booking.userId,
+      totalPrice: booking.totalPrice,
+      startDate: booking.startDate,
+      endDate: booking.endDate,
+      phone: booking.phone,
+      deliveryCity: booking.deliveryCity,
+      firstName: booking.firstName,
+      lastName: booking.lastName,
+      deliveryBranch: booking.deliveryBranch,
+      createdAt: booking.createdAt,
+    });
+  } catch (error) {
+    console.error('Booking error:', error);
+    return res
+      .status(500)
+      .json({ message: 'Помилка при створенні бронювання' });
+  }
+};
+
+export const getUserBookingsController = async (req, res) => {
+  try {
+    const bookings = await Booking.find({ userId: req.user._id })
+      .populate('toolId')
+      .sort({ createdAt: -1 });
+
+    return res.json(bookings);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Помилка отримання списку' });
+  }
 };
