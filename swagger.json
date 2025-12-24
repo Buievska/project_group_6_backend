@@ -20,6 +20,29 @@
       }
     },
     "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "694559d0f31229bb60693d3e"
+          },
+          "name": {
+            "type": "string",
+            "example": "Alex"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "alex@gmail.com"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://ac.goit.global/fullstack/react/default-avatar.jpg"
+          }
+        }
+      },
       "Category": {
         "type": "object",
         "properties": {
@@ -79,6 +102,54 @@
           "updatedAt": { "type": "string", "format": "date-time" }
         }
       },
+      "Booking": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string", "example": "69441d4a3c23b14e3d57d4ca" },
+          "toolId": { "type": "string", "example": "69440f877ee8028886739ce6" },
+          "userId": { "type": "string", "example": "694280e4c458bb0a3b49d941" },
+          "firstName": { "type": "string", "example": "Олена" },
+          "lastName": { "type": "string", "example": "Петренко" },
+          "phone": { "type": "string", "example": "+380123456789" },
+          "deliveryCity": { "type": "string", "example": "Київ" },
+          "deliveryBranch": { "type": "string", "example": "Відділення 12" },
+          "startDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2025-12-20"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2025-12-22"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-12-18T15:27:06.824Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-12-18T15:27:06.824Z"
+          }
+        },
+        "required": [
+          "_id",
+          "toolId",
+          "userId",
+          "firstName",
+          "lastName",
+          "phone",
+          "deliveryCity",
+          "deliveryBranch",
+          "startDate",
+          "endDate",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+
       "Feedback": {
         "type": "object",
         "properties": {
@@ -320,6 +391,43 @@
         }
       }
     },
+    "/auth/refresh": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Оновити access token",
+        "description": "Оновлює accessToken за допомогою refreshToken та sessionId з cookies",
+        "responses": {
+          "200": {
+            "description": "Successfully refreshed session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "number", "example": 200 },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully refreshed session!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "accessToken": {
+                          "type": "string",
+                          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Session missing" },
+          "403": { "description": "Session expired or invalid" }
+        }
+      }
+    },
     "/auth/logout": {
       "post": {
         "summary": "Вихід користувача",
@@ -366,28 +474,7 @@
                       "type": "string",
                       "example": "Successfully fetched current user"
                     },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "_id": {
-                          "type": "string",
-                          "example": "694280e4c458bb0a3b49d941"
-                        },
-                        "name": {
-                          "type": "string",
-                          "example": "Олена"
-                        },
-                        "email": {
-                          "type": "string",
-                          "example": "olena123@gmail.com"
-                        },
-                        "avatarUrl": {
-                          "type": "string",
-                          "format": "uri",
-                          "example": "https://ac.goit.global/fullstack/react/default-avatar.jpg"
-                        }
-                      }
-                    }
+                    "data": { "$ref": "#/components/schemas/User" }
                   }
                 }
               }
@@ -425,25 +512,7 @@
                   "properties": {
                     "status": { "type": "integer", "example": 200 },
                     "message": { "type": "string", "example": "User found" },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "_id": {
-                          "type": "string",
-                          "example": "694280e4c458bb0a3b49d941"
-                        },
-                        "name": { "type": "string", "example": "Олена" },
-                        "email": {
-                          "type": "string",
-                          "example": "olena123@gmail.com"
-                        },
-                        "avatarUrl": {
-                          "type": "string",
-                          "format": "uri",
-                          "example": "https://ac.goit.global/fullstack/react/default-avatar.jpg"
-                        }
-                      }
-                    }
+                    "data": { "$ref": "#/components/schemas/User" }
                   }
                 }
               }
@@ -451,6 +520,68 @@
           },
           "404": {
             "description": "Користувача не знайдено"
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Users"],
+        "summary": "Оновити дані користувача",
+        "description": "Приватний ендпоінт. Користувач може оновити лише власний профіль.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID користувача"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 32,
+                    "example": "Alex"
+                  },
+                  "avatarUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "example": "https://example.com/avatar.jpg"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Дані користувача успішно оновлено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "User not found"
           }
         }
       }
@@ -916,43 +1047,7 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "toolId": {
-                    "type": "string",
-                    "example": "69440f877ee8028886739ce6"
-                  },
-                  "firstName": { "type": "string", "example": "Олена" },
-                  "lastName": { "type": "string", "example": "Петренко" },
-                  "phone": { "type": "string", "example": "+380123456789" },
-                  "deliveryCity": { "type": "string", "example": "Київ" },
-                  "deliveryBranch": {
-                    "type": "string",
-                    "example": "Відділення 12"
-                  },
-                  "startDate": {
-                    "type": "string",
-                    "format": "date",
-                    "example": "2025-12-20"
-                  },
-                  "endDate": {
-                    "type": "string",
-                    "format": "date",
-                    "example": "2025-12-22"
-                  }
-                },
-                "required": [
-                  "toolId",
-                  "firstName",
-                  "lastName",
-                  "phone",
-                  "deliveryCity",
-                  "deliveryBranch",
-                  "startDate",
-                  "endDate"
-                ]
-              }
+              "schema": { "$ref": "#/components/schemas/Booking" }
             }
           }
         },
@@ -1044,6 +1139,116 @@
                   "properties": {
                     "status": { "type": "string", "example": "error" },
                     "message": { "type": "string", "example": "Tool not found" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bookings/my": {
+      "get": {
+        "tags": ["Bookings"],
+        "summary": "Отримати бронювання поточного користувача",
+        "description": "Приватний ендпоінт. Повертає список бронювань користувача",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Список бронювань поточного користувача",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Booking" }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Помилка отримання списку"
+          }
+        }
+      }
+    },
+    "/bookings/{id}": {
+      "delete": {
+        "tags": ["Bookings"],
+        "summary": "Скасувати бронювання",
+        "description": "Приватний ендпоінт. Потрібен Bearer токен.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID бронювання для видалення",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "69441d4a3c23b14e3d57d4ca"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Бронювання успішно скасовано",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Бронювання успішно скасовано"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Доступ заборонено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "У вас немає прав для видалення цього бронювання"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Бронювання не знайдено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Бронювання не знайдено"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Помилка сервера",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Помилка при видаленні бронювання"
+                    }
                   }
                 }
               }
@@ -1163,6 +1368,68 @@
                   "properties": {
                     "status": { "type": "string", "example": "error" },
                     "message": { "type": "string", "example": "Unauthorized" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/feedbacks/tool/{toolId}": {
+      "get": {
+        "tags": ["Feedbacks"],
+        "summary": "Отримати всі відгуки інструменту",
+        "description": "Публічний ендпоінт. Повертає список відгуків для конкретного інструменту.",
+        "parameters": [
+          {
+            "name": "toolId",
+            "in": "path",
+            "description": "ID інструменту",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "692db3ffab59e437964311a7"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список відгуків успішно отримано",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "success" },
+                    "code": { "type": "integer", "example": 200 },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "feedbacks": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/FeedbackDetailed"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Інструмент не знайдено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Інструмент не знайдено"
+                    }
                   }
                 }
               }
