@@ -54,27 +54,32 @@ export const registerUser = async (req, res) => {
 export const refreshUser = async (req, res) => {
   const { sessionId, refreshToken } = req.cookies;
 
-  const tokenToRefresh = sessionId || refreshToken;
-
-  if (!tokenToRefresh) {
+  if (!sessionId || !refreshToken) {
     throw createHttpError(401, 'Session missing');
   }
 
-  const newSession = await refreshSession({ sessionId, refreshToken });
+  try {
+    const newSession = await refreshSession({ sessionId, refreshToken });
 
-  if (!newSession) {
-    throw createHttpError(403, 'Session expired or invalid');
+    if (!newSession) {
+      throw createHttpError(401, 'Session expired or invalid');
+    }
+
+    setSessionCookies(res, newSession);
+
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully refreshed session!',
+      data: {
+        accessToken: newSession.accessToken,
+      },
+    });
+  } catch (error) {
+    res.clearCookie('sessionId');
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+    throw error;
   }
-
-  setSessionCookies(res, newSession);
-
-  res.status(200).json({
-    status: 200,
-    message: 'Successfully refreshed session!',
-    data: {
-      accessToken: newSession.accessToken,
-    },
-  });
 };
 
 export const logoutUser = async (req, res) => {
