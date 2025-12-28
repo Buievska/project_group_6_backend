@@ -13,14 +13,41 @@ export const bookingController = async (req, res) => {
   try {
     const { toolId, startDate, endDate } = req.body;
 
+    // 1. Знаходимо інструмент
     const tool = await Tool.findById(toolId);
     if (!tool) {
       return res.status(404).json({ message: 'Інструмент не знайдено' });
     }
 
+    // 2. Валідація логіки дат: дата завершення не може бути раніше дати початку
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    if (end < start) {
+      return res
+        .status(400)
+        .json({ message: 'Дата завершення не може бути раніше дати початку' });
+    }
+
+    // 3. ПЕРЕВІРКА НА ПЕРЕТИН ДАТ
+    // Шукаємо бронювання, де: (Старе_Початок <= Нове_Кінець) ТА (Старе_Кінець >= Нове_Початок)
+    const overlappingBooking = await Booking.findOne({
+      toolId,
+      startDate: { $lte: end },
+      endDate: { $gte: start },
+    });
+
+    if (overlappingBooking) {
+      return res.status(409).json({
+        message: 'Ці дати вже заброньовані. Будь ласка, оберіть інший період.',
+      });
+    }
+
+    // 4. Розрахунок ціни
     const days = calculateDays(startDate, endDate);
     const calculatedPrice = days * tool.pricePerDay;
 
+    // 5. Створення бронювання
     const booking = await Booking.create({
       ...req.body,
       userId: req.user._id,
@@ -34,10 +61,10 @@ export const bookingController = async (req, res) => {
       totalPrice: booking.totalPrice,
       startDate: booking.startDate,
       endDate: booking.endDate,
-      phone: booking.phone,
-      deliveryCity: booking.deliveryCity,
       firstName: booking.firstName,
       lastName: booking.lastName,
+      phone: booking.phone,
+      deliveryCity: booking.deliveryCity,
       deliveryBranch: booking.deliveryBranch,
       createdAt: booking.createdAt,
     });
